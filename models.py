@@ -11,9 +11,11 @@ class User(Base):
     username = Column(String, unique=True, index=True)
     email = Column(String, unique=True, index=True)
     password = Column(String)
-
 class UserBase(BaseModel):
     username: str
     email: EmailStr
     password: str
     password_confirmation: str
+class UserLogin(BaseModel):
+    username: str
+    password: str
