@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
+from datetime import datetime
 
 from pydantic import BaseModel, EmailStr
 
@@ -19,3 +20,12 @@ class UserBase(BaseModel):
 class UserLogin(BaseModel):
     username: str
     password: str
+
+class Task(Base):
+    __tablename__ = 'tasks'
+    id = Column(Integer, primary_key=True, index=True)
+    filename = Column(String, nullable=False)
+    new_format = Column(String, nullable=False)
+    timestamp = Column(DateTime, nullable=False)
+    status = Column(String, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"))
