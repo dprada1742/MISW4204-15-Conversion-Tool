@@ -43,6 +43,13 @@ Run the FastAPI application:
 uvicorn app.main:app --reload
 ```
 
+## Database Migrations
+1. Generate a new migration:
+
+```bash
+alembic revision --autogenerate -m "description_of_your_migration"
+```
+
 The API will be available at [http://127.0.0.1:8000](http://127.0.0.1:8000). You can access the interactive API documentation at [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
 
 ## API Endpoints
