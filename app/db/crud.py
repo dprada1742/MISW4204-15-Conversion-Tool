@@ -2,10 +2,11 @@ from datetime import datetime
 from typing import Optional
 from sqlalchemy import asc, desc
 from sqlalchemy.orm import Session
+from api.schemas import TaskResponse
 from core.security import verify_password, get_password_hash
 from db.models.user import User
 from fastapi import HTTPException, status
-from db.models.task import Task
+from db.models.task import Task, TaskStatus
 
 
 def create_user(db: Session, username: str, email: str, password: str):
@@ -55,7 +56,21 @@ def get_user_tasks(
             .limit(max)
             .all()
         )
-    return tasks
+
+    task_responses = [
+        TaskResponse(
+            id=task.id,
+            original_format=task.original_format,
+            target_format=task.target_format,
+            status=task.status,
+            created_at=task.created_at,
+            original_file_url=f"/files/{task.id}/original",
+            processed_file_url=f"/files/{task.id}/processed",
+        )
+        for task in tasks
+    ]
+
+    return task_responses
 
 
 def get_user(db: Session, username: str):
@@ -67,7 +82,7 @@ def create_task(db: Session, file_name: str, new_format: str, user_id: int):
         original_format=file_name.split(".")[-1],
         target_format=new_format,
         user_id=user_id,
-        status="uploaded",
+        status=TaskStatus.UPLOADED,
         created_at=datetime.utcnow(),
     )
     db.add(db_task)

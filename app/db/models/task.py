@@ -1,7 +1,21 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Enum
+from enum import Enum
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    ForeignKey,
+    DateTime,
+    Enum as SQLAlchemyEnum,
+)
 from sqlalchemy.orm import relationship
 from db.session import Base
 from datetime import datetime
+
+
+class TaskStatus(str, Enum):
+    UPLOADED = "uploaded"
+    PROCESSED = "processed"
+    ERROR = "error"
 
 
 class Task(Base):
@@ -12,4 +26,4 @@ class Task(Base):
     user = relationship("User", back_populates="tasks")
     original_format = Column(String, index=True)
     target_format = Column(String, index=True)
-    status = Column(String, index=True)
+    status = Column(SQLAlchemyEnum(TaskStatus), index=True)

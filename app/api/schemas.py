@@ -1,7 +1,8 @@
 from fastapi import UploadFile
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
-from typing import List, Optional
+from typing import List
+from db.models.task import TaskStatus
 
 
 class SignUpRequest(BaseModel):
@@ -16,33 +17,18 @@ class LoginRequest(BaseModel):
     password: str
 
 
-class TaskBase(BaseModel):
-    original_format: str
-    target_format: str
-    status: Optional[str]
-
-
-class TaskInDB(TaskBase):
-    id: int
-    created_at: datetime
-    user_id: int
-
-    class Config:
-        orm_mode = True
-
-
-class TaskList(BaseModel):
-    tasks: List[TaskInDB]
-
-
 class TaskResponse(BaseModel):
     id: int
     original_format: str
     target_format: str
-    status: str
+    status: TaskStatus
     created_at: datetime
     original_file_url: str
     processed_file_url: str
+
+
+class TaskList(BaseModel):
+    tasks: List[TaskResponse]
 
 
 class CreateTaskRequest(BaseModel):
