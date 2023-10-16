@@ -1,10 +1,10 @@
 from fastapi import FastAPI
-from api.routers import auth, tasks
-from db.session import init_db
+from database import Base, engine
+from routers import auth, tasks
 
 app = FastAPI()
 
-init_db()
+Base.metadata.create_all(bind=engine)
 
 app.include_router(auth.router)
 app.include_router(tasks.router)

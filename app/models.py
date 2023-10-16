@@ -8,8 +8,8 @@ from sqlalchemy import (
     Enum as SQLAlchemyEnum,
 )
 from sqlalchemy.orm import relationship
-from db.session import Base
 from datetime import datetime
+from database import Base
 
 
 class TaskStatus(str, Enum):
@@ -27,3 +27,12 @@ class Task(Base):
     original_format = Column(String, index=True)
     target_format = Column(String, index=True)
     status = Column(SQLAlchemyEnum(TaskStatus), index=True)
+
+
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True)
+    email = Column(String, unique=True)
+    hashed_password = Column(String)
+    tasks = relationship("Task", back_populates="user")

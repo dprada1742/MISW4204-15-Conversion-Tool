@@ -2,11 +2,10 @@ from datetime import datetime
 from typing import Optional
 from sqlalchemy import asc, desc
 from sqlalchemy.orm import Session
-from api.schemas import TaskResponse
-from core.security import verify_password, get_password_hash
-from db.models.user import User
 from fastapi import HTTPException, status
-from db.models.task import Task, TaskStatus
+from security import get_password_hash, verify_password
+from models import Task, TaskStatus, User
+from schemas import TaskResponse
 
 
 def create_user(db: Session, username: str, email: str, password: str):

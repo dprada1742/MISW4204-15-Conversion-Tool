@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
-import jwt
 from passlib.context import CryptContext
+import jwt
 
 SECRET_KEY = "mysecretkey"
 ALGORITHM = "HS256"

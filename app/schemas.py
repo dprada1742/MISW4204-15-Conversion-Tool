@@ -2,7 +2,8 @@ from fastapi import UploadFile
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import List
-from db.models.task import TaskStatus
+
+from models import TaskStatus
 
 
 class SignUpRequest(BaseModel):
