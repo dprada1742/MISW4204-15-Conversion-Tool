@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, Form, HTTPException, status
 from sqlalchemy.orm import Session
 from db.session import get_db
 from db.crud import create_user
-from api.schemas import LoginRequest, SignUpRequest
+from api.schemas import SignUpRequest
 from db.crud import verify_credentials
 from core.security import create_access_token
 
@@ -22,8 +22,10 @@ async def signup(sign_up_request: SignUpRequest, db: Session = Depends(get_db)):
 
 
 @router.post("/auth/login", response_model=dict)
-async def login(login_request: LoginRequest, db: Session = Depends(get_db)):
-    user = verify_credentials(db, login_request.username, login_request.password)
+async def login(
+    username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)
+):
+    user = verify_credentials(db, username, password)
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials"
