@@ -10,6 +10,7 @@ from fastapi import (
     status,
 )
 from sqlalchemy.orm import Session
+from app.celery_app import convert_file
 from app.crud import create_task, delete_task, get_task, get_user_tasks
 from app.database import get_db
 from app.dependencies import get_current_user
@@ -38,6 +39,7 @@ async def create_task_endpoint(
     current_user: User = Depends(get_current_user),
 ):
     task = create_task(db, file.filename, newFormat, current_user.id)
+    convert_file.apply_async(args=[task.id, file.filename, newFormat])
     return {"message": "Task created successfully"}
 
 

@@ -43,6 +43,13 @@ Run the FastAPI application:
 uvicorn app.main:app --reload
 ```
 
+
+Run celery worker
+
+```bash
+celery -A app.celery_app worker --loglevel=info -P gevent
+```
+
 ## Database Migrations
 1. Generate a new migration:
 
