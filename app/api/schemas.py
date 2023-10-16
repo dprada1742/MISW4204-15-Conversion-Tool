@@ -35,6 +35,16 @@ class TaskList(BaseModel):
     tasks: List[TaskInDB]
 
 
+class TaskResponse(BaseModel):
+    id: int
+    original_format: str
+    target_format: str
+    status: str
+    created_at: datetime
+    original_file_url: str
+    processed_file_url: str
+
+
 class CreateTaskRequest(BaseModel):
     fileName: UploadFile
     newFormat: str

@@ -74,3 +74,7 @@ def create_task(db: Session, file_name: str, new_format: str, user_id: int):
     db.commit()
     db.refresh(db_task)
     return db_task
+
+
+def get_task(db: Session, task_id: int):
+    return db.query(Task).filter(Task.id == task_id).first()
