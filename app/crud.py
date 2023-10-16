@@ -3,9 +3,9 @@ from typing import Optional
 from sqlalchemy import asc, desc
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
-from security import get_password_hash, verify_password
-from models import Task, TaskStatus, User
-from schemas import TaskResponse
+from app.security import get_password_hash, verify_password
+from app.models import Task, TaskStatus, User
+from app.schemas import TaskResponse
 
 
 def create_user(db: Session, username: str, email: str, password: str):

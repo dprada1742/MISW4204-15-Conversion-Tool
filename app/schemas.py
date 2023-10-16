@@ -3,7 +3,7 @@ from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import List
 
-from models import TaskStatus
+from app.models import TaskStatus
 
 
 class SignUpRequest(BaseModel):

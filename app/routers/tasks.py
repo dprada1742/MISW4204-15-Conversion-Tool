@@ -10,11 +10,11 @@ from fastapi import (
     status,
 )
 from sqlalchemy.orm import Session
-from crud import create_task, delete_task, get_task, get_user_tasks
-from database import get_db
-from dependencies import get_current_user
-from models import User
-from schemas import TaskList, TaskResponse
+from app.crud import create_task, delete_task, get_task, get_user_tasks
+from app.database import get_db
+from app.dependencies import get_current_user
+from app.models import User
+from app.schemas import TaskList, TaskResponse
 
 router = APIRouter()
 
