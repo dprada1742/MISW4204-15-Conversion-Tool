@@ -1,3 +1,4 @@
+from fastapi import UploadFile
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import List, Optional
@@ -32,3 +33,8 @@ class TaskInDB(TaskBase):
 
 class TaskList(BaseModel):
     tasks: List[TaskInDB]
+
+
+class CreateTaskRequest(BaseModel):
+    fileName: UploadFile
+    newFormat: str

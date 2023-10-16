@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 from sqlalchemy import asc, desc
 from sqlalchemy.orm import Session
@@ -59,3 +60,17 @@ def get_user_tasks(
 
 def get_user(db: Session, username: str):
     return db.query(User).filter(User.username == username).first()
+
+
+def create_task(db: Session, file_name: str, new_format: str, user_id: int):
+    db_task = Task(
+        original_format=file_name.split(".")[-1],
+        target_format=new_format,
+        user_id=user_id,
+        status="uploaded",
+        created_at=datetime.utcnow(),
+    )
+    db.add(db_task)
+    db.commit()
+    db.refresh(db_task)
+    return db_task
