@@ -10,5 +10,10 @@ COPY . /app
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Install ffmpeg
+RUN apt-get update && \
+    apt-get install -y ffmpeg && \
+    rm -rf /var/lib/apt/lists/*
+
 # Command to run the celery worker
 CMD ["celery", "-A", "app.celery_app", "worker", "--loglevel=info", "-P", "gevent"]
