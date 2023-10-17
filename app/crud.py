@@ -63,8 +63,8 @@ def get_user_tasks(
             target_format=task.target_format,
             status=task.status,
             created_at=task.created_at,
-            original_file_url=f"/files/{task.id}/original",
-            processed_file_url=f"/files/{task.id}/processed",
+            original_file_url=f"/files/{task.id}/original.{task.original_format}",
+            processed_file_url=f"/files/{task.id}/processed.{task.target_format}",
         )
         for task in tasks
     ]
