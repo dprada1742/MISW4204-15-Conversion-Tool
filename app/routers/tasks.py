@@ -31,6 +31,18 @@ async def read_tasks(
     return {"tasks": tasks}
 
 
+VALID_FORMATS = {"mp4", "webm", "avi"}
+
+
+def validate_format(format: str) -> str:
+    if format.lower() not in VALID_FORMATS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid format: {format}. Valid formats are: {', '.join(VALID_FORMATS)}.",
+        )
+    return format.lower()
+
+
 @router.post("/api/tasks", response_model=dict)
 async def create_task_endpoint(
     file: UploadFile = File(...),
@@ -38,6 +50,16 @@ async def create_task_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    file_format = file.filename.split(".")[-1].lower()
+    validate_format(newFormat)
+    validate_format(file_format)
+
+    if file_format == newFormat.lower():
+        raise HTTPException(
+            status_code=400,
+            detail="New format cannot be the same as the current format.",
+        )
+
     task = create_task(db, file.filename, newFormat, current_user.id)
     convert_file.apply_async(args=[task.id, file.filename, newFormat])
     return {"message": "Task created successfully"}
