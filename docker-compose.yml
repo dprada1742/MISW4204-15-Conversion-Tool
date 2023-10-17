@@ -28,6 +28,8 @@ services:
     depends_on:
       - db
       - redis
+    volumes:
+      - ./files:/app/files 
 
   celery:
     build:
@@ -36,6 +38,8 @@ services:
     depends_on:
       - db
       - redis
+    volumes:
+      - ./files:/app/files 
 
 volumes:
   postgres_data:

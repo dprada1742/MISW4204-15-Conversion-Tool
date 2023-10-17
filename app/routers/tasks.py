@@ -1,3 +1,5 @@
+import shutil
+import os
 from fastapi import (
     APIRouter,
     Depends,
@@ -61,7 +63,14 @@ async def create_task_endpoint(
         )
 
     task = create_task(db, file.filename, newFormat, current_user.id)
-    convert_file.apply_async(args=[task.id, file.filename, newFormat])
+    file_location = os.path.join(
+        os.getcwd(), "files", "original", f"{task.id}.{file_format}"
+    )
+    with open(file_location, "wb+") as file_object:
+        shutil.copyfileobj(file.file, file_object)
+
+    convert_file.apply_async(args=[task.id, file_format, newFormat.lower()])
+
     return {"message": "Task created successfully"}
 
 
