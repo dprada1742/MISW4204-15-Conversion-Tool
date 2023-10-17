@@ -99,3 +99,13 @@ def delete_task(db: Session, task_id: int):
     if task:
         db.delete(task)
         db.commit()
+
+
+def update_task_status(db: Session, task_id: int, status: TaskStatus):
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if task:
+        task.status = status
+        db.commit()
+        db.refresh(task)
+        return task
+    return None
