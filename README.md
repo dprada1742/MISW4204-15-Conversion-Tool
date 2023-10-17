@@ -9,6 +9,12 @@ This is a FastAPI project that includes user authentication and task management 
 - Python 3.8 or higher
 - Docker
 
+### Run project using Docker
+```bash
+docker-compose build
+docker-compose up
+```
+
 ### Installation
 
 1. Clone the repository:
