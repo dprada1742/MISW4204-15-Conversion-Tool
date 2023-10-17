@@ -6,11 +6,13 @@ from fastapi import (
     File,
     Form,
     HTTPException,
+    Path,
     Query,
     Response,
     UploadFile,
     status,
 )
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from app.celery_app import convert_file
 from app.crud import create_task, delete_task, get_task, get_user_tasks
@@ -84,8 +86,9 @@ async def get_task_endpoint(
     if task is None or task.user_id != current_user.id:
         raise HTTPException(status_code=404, detail="Task not found")
 
-    original_file_url = f"/files/{task.id}/original.{task.original_format}"
-    processed_file_url = f"/files/{task.id}/processed.{task.target_format}"
+    base_url = "http://localhost:8000"
+    original_file_url = f"{base_url}/files/original/{task.id}.{task.original_format}"
+    processed_file_url = f"{base_url}/files/converted/{task.id}.{task.target_format}"
 
     return {
         "id": task.id,
@@ -110,3 +113,21 @@ async def delete_task_endpoint(
 
     delete_task(db, id_task)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.get("/files/original/{task_id}.{original_format}")
+async def serve_original_file(
+    task_id: int = Path(..., title="The ID of the task"),
+    original_format: str = Path(..., title="The original format of the file"),
+):
+    file_path = os.path.join("files", "original", f"{task_id}.{original_format}")
+    return FileResponse(file_path)
+
+
+@router.get("/files/converted/{task_id}.{target_format}")
+async def serve_converted_file(
+    task_id: int = Path(..., title="The ID of the task"),
+    target_format: str = Path(..., title="The target format of the file"),
+):
+    file_path = os.path.join("files", "converted", f"{task_id}.{target_format}")
+    return FileResponse(file_path)
