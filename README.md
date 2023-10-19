@@ -12,7 +12,7 @@ This is a FastAPI project that includes user authentication and task management 
 
 1. **Clone the repository:**
 ```bash
-git clone https://github.com/dprada1742/MISW4204-15-Conversion-Tool.git
+git clone --branch 1.2.1 https://github.com/dprada1742/MISW4204-15-Conversion-Tool.git
 cd MISW4204-15-Conversion-Tool
 ```
 
