@@ -63,10 +63,9 @@ celery -A app.celery_app worker --loglevel=info -P gevent
 alembic revision --autogenerate -m "description_of_your_migration"
 ```
 
-The API will be available at [http://127.0.0.1:8000](http://127.0.0.1:8000). You can access the interactive API documentation at [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
-
 ## API Endpoints
-
+The API will be available at [http://127.0.0.1:8000](http://127.0.0.1:8000). You can access the interactive API documentation at [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
+Alternatively, an extended Postman documentation can be found here: https://documenter.getpostman.com/view/574469/2s9YR85Z9H#500762ee-c7c5-4471-88a2-2f9ecdcc27c2
 - **User Authentication**
     - `POST /auth/signup`: Sign up a new user.
     - `POST /auth/login`: Log in and receive an access token.
