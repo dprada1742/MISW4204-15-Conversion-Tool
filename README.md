@@ -33,8 +33,8 @@ You can access the interactive API documentation at [http://localhost:8000/docs]
 The API includes the following endpoints:
 
 - **User Authentication**
-    - `POST /auth/signup`: Sign up a new user.
-    - `POST /auth/login`: Log in and receive an access token.
+    - `POST api/auth/signup`: Sign up a new user.
+    - `POST api/auth/login`: Log in and receive an access token.
 
 - **Task Management**
     - `GET /api/tasks`: Get a list of tasks.
