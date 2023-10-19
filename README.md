@@ -1,71 +1,37 @@
 # MISW4204-15-Conversion-Tool
 
-This is a FastAPI project that includes user authentication and task management functionalities. The project utilizes FastAPI, SQLAlchemy for interacting with a PostgreSQL database, and Alembic for database migrations.
+This is a FastAPI project that includes user authentication and task management functionalities. The project utilizes FastAPI, SQLAlchemy for interacting with a PostgreSQL database, and Alembic for database migrations. The docker-compose setup takes care of the necessary environment setup, making it easy to get started.
 
 ## Setup
 
 ### Requirements
 
-- Python 3.8 or higher
 - Docker
 
-### Run project using Docker
-```bash
-docker-compose build
-docker-compose up
-```
+### Run Project Using Docker
 
-### Installation
-
-1. Clone the repository:
+1. **Clone the repository:**
 ```bash
 git clone https://github.com/dprada1742/MISW4204-15-Conversion-Tool.git
 cd MISW4204-15-Conversion-Tool
 ```
 
-2. Create a virtual environment and activate it:
+2. **Build and run the Docker containers:**
 ```bash
-python -m venv venv
-source venv\Scripts\activate
-```
-
-3. Install the dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-4. Set up the database:
-```bash
-# Update the DATABASE_URL in database.py with your database connection details.
-# Then run:
-alembic upgrade head
+docker-compose build
+docker-compose up
 ```
 
 ## Usage
 
-Run the FastAPI application:
+Once the Docker containers are up and running, the FastAPI application will be available at [http://localhost:8000](http://localhost:8000).
 
-```bash
-uvicorn app.main:app --reload
-```
-
-
-Run celery worker
-
-```bash
-celery -A app.celery_app worker --loglevel=info -P gevent
-```
-
-## Database Migrations
-1. Generate a new migration:
-
-```bash
-alembic revision --autogenerate -m "description_of_your_migration"
-```
+You can access the interactive API documentation at [http://localhost:8000/docs](http://localhost:8000/docs).
 
 ## API Endpoints
-The API will be available at [http://127.0.0.1:8000](http://127.0.0.1:8000). You can access the interactive API documentation at [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
-Alternatively, an extended Postman documentation can be found here: https://documenter.getpostman.com/view/574469/2s9YR85Z9H#500762ee-c7c5-4471-88a2-2f9ecdcc27c2
+
+The API includes the following endpoints:
+
 - **User Authentication**
     - `POST /auth/signup`: Sign up a new user.
     - `POST /auth/login`: Log in and receive an access token.
@@ -75,3 +41,8 @@ Alternatively, an extended Postman documentation can be found here: https://docu
     - `POST /api/tasks`: Create a new task.
     - `GET /api/tasks/{id_task}`: Retrieve details of a specific task.
     - `DELETE /api/tasks/{id_task}`: Delete a specific task.
+
+For more detailed API documentation, you can visit the interactive API documentation at [http://localhost:8000/docs](http://localhost:8000/docs) once the application is running.
+```
+
+This README simplifies the setup process by focusing on the Docker setup, which is what you wanted for the tutor. It avoids the need for manual database setup, Python virtual environment setup, or manual installation of dependencies. The tutor just needs Docker installed, and then they can clone the project, build and run the Docker containers, and access the application and API documentation through their web browser.

@@ -8,7 +8,7 @@ from app.database import get_db
 router = APIRouter()
 
 
-@router.post("/auth/signup", status_code=status.HTTP_201_CREATED)
+@router.post("/api/auth/signup", status_code=status.HTTP_201_CREATED)
 async def signup(sign_up_request: SignUpRequest, db: Session = Depends(get_db)):
     if sign_up_request.password1 != sign_up_request.password2:
         raise HTTPException(
@@ -20,7 +20,7 @@ async def signup(sign_up_request: SignUpRequest, db: Session = Depends(get_db)):
     return {"message": "Account successfully created"}
 
 
-@router.post("/auth/login", response_model=dict)
+@router.post("/api/auth/login", response_model=dict)
 async def login(
     username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)
 ):
