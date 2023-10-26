@@ -7,8 +7,8 @@ from app.models import TaskStatus
 
 celery_app = Celery(
     "conversion_tool",
-    broker="redis://redis:6379/0",
-    backend="redis://redis:6379/0",
+    broker="redis://default:strong-password:34.171.232.213:6379/0",
+    backend="redis://default:strong-password:34.171.232.213:6379/0",
 )
 
 
