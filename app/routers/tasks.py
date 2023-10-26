@@ -68,8 +68,12 @@ async def create_task_endpoint(
     file_location = os.path.join(
         "/mnt/nfs_share", "files", "original", f"{task.id}.{file_format}"
     )
-    with open(file_location, "wb+") as file_object:
-        shutil.copyfileobj(file.file, file_object)
+    try:
+        with open(file_location, "wb+") as file_object:
+            shutil.copyfileobj(file.file, file_object)
+    except Exception as e:
+        print(f"Error while saving file: {e}")
+        raise
 
     convert_file.apply_async(args=[task.id, file_format, newFormat.lower()])
 
