@@ -12,7 +12,7 @@ app = FastAPI()
 
 @app.exception_handler(Exception)
 async def generic_exception_handler(request: Request, exc: Exception):
-    logger.error(f"An error occurred: {exc}")
+    logger.exception(f"An error occurred: {exc}")
     return JSONResponse(
         status_code=500,
         content={"detail": "An unexpected error occurred."},
