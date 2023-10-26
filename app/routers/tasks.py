@@ -124,7 +124,9 @@ async def serve_original_file(
     task_id: int = Path(..., title="The ID of the task"),
     original_format: str = Path(..., title="The original format of the file"),
 ):
-    file_path = os.path.join("files", "original", f"{task_id}.{original_format}")
+    
+    base_dir = os.path.join("/mnt/nfs_share", "files")
+    file_path = os.path.join(base_dir, "original", f"{task_id}.{original_format}")
     return FileResponse(file_path)
 
 
@@ -133,5 +135,7 @@ async def serve_converted_file(
     task_id: int = Path(..., title="The ID of the task"),
     target_format: str = Path(..., title="The target format of the file"),
 ):
-    file_path = os.path.join("files", "converted", f"{task_id}.{target_format}")
+    
+    base_dir = os.path.join("/mnt/nfs_share", "files")
+    file_path = os.path.join(base_dir, "converted", f"{task_id}.{target_format}")
     return FileResponse(file_path)
