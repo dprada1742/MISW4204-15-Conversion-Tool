@@ -16,7 +16,7 @@ celery_app = Celery(
 def convert_file(task_id: int, original_format: str, target_format: str):
     db = SessionLocal()
 
-    base_dir = os.path.join(os.getcwd(), "files")
+    base_dir = os.path.join("/mnt/nfs_share", "files")
     original_dir = os.path.join(base_dir, "original")
     converted_dir = os.path.join(base_dir, "converted")
 
