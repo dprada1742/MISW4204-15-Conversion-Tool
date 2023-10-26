@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from alembic.config import Config
 from alembic import command
 
-SQLALCHEMY_DATABASE_URL = "postgresql://user:password@db:5432/db"
+SQLALCHEMY_DATABASE_URL = "postgresql://postgres:D~-AVY?EmVfP)'7T@34.27.24.35:5432/conversion"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
