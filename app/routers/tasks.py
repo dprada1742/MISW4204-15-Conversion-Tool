@@ -66,7 +66,7 @@ async def create_task_endpoint(
 
     task = create_task(db, file.filename, newFormat, current_user.id)
     file_location = os.path.join(
-        os.getcwd(), "files", "original", f"{task.id}.{file_format}"
+        "/mnt/nfs_share", "files", "original", f"{task.id}.{file_format}"
     )
     with open(file_location, "wb+") as file_object:
         shutil.copyfileobj(file.file, file_object)
