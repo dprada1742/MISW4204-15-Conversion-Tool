@@ -7,8 +7,8 @@ from app.models import TaskStatus
 
 celery_app = Celery(
     "conversion_tool",
-    broker="redis://default:strong-password@34.171.232.213:6379/0",
-    backend="redis://default:strong-password@34.171.232.213:6379/0",
+    broker="redis://localhost:6379/0",
+    backend="redis://localhost:6379/0",
 )
 
 
@@ -16,7 +16,7 @@ celery_app = Celery(
 def convert_file(task_id: int, original_format: str, target_format: str):
     db = SessionLocal()
 
-    base_dir = os.path.join("/mnt/nfs_share", "files")
+    base_dir = os.path.join(os.getcwd(), "files")
     original_dir = os.path.join(base_dir, "original")
     converted_dir = os.path.join(base_dir, "converted")
 

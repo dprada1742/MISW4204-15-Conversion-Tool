@@ -72,6 +72,8 @@ def get_user_tasks(
 
     return task_responses
 
+def get_tasks_by_state(db: Session, status: str, limit: int):
+    return db.query(Task).filter(Task.status == status).limit(limit).all()
 
 def get_user(db: Session, username: str):
     return db.query(User).filter(User.username == username).first()
