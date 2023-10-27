@@ -15,6 +15,7 @@ def perform_stress_test():
     db = SessionLocal()
     total_tasks_to_enqueue = 250  # Total number of unique tasks to enqueue
     tasks = get_tasks_by_state(db, "uploaded", total_tasks_to_enqueue)
+    print(f'Tasks with "uploaded" status in the DB retrieved: {len(tasks)}')
     try:
         i = 0
         for task in tasks:
