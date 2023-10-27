@@ -66,7 +66,7 @@ async def create_task_endpoint(
 
     task = create_task(db, file.filename, newFormat, current_user.id)
     file_location = os.path.join(
-        "/mnt/nfs_share", "files", "original", f"{task.id}.{file_format}"
+        os.getcwd(), "files", "original", f"{task.id}.{file_format}"
     )
     try:
         with open(file_location, "wb+") as file_object:
@@ -75,7 +75,7 @@ async def create_task_endpoint(
         print(f"Error while saving file: {e}")
         raise
 
-    convert_file.apply_async(args=[task.id, file_format, newFormat.lower()])
+    #convert_file.apply_async(args=[task.id, file_format, newFormat.lower()])
 
     return {"message": "Task created successfully"}
 
