@@ -1,4 +1,5 @@
 import os
+import random
 import ffmpeg
 from celery import Celery
 from app.crud import update_task_status
@@ -23,7 +24,7 @@ def convert_file(task_id: int, original_format: str, target_format: str):
     os.makedirs(original_dir, exist_ok=True)
     os.makedirs(converted_dir, exist_ok=True)
 
-    input_path = os.path.join(original_dir, f"{task_id}.{original_format}")
+    input_path = os.path.join(original_dir, f"file{random.randint(1,3)}.{original_format}")
     output_path = os.path.join(converted_dir, f"{task_id}.{target_format}")
 
     try:
