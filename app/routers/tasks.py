@@ -20,8 +20,16 @@ from app.database import get_db
 from app.dependencies import get_current_user
 from app.models import User
 from app.schemas import TaskList, TaskResponse
+from google.cloud import storage
+from starlette.responses import StreamingResponse
 
 router = APIRouter()
+
+# Initialize the GCS client
+storage_client = storage.Client()
+
+# Define bucket name
+bucket_name = "bucket-files"
 
 
 @router.get("/api/tasks", response_model=TaskList)
@@ -125,9 +133,26 @@ async def serve_original_file(
     original_format: str = Path(..., title="The original format of the file"),
 ):
     
-    base_dir = os.path.join("/mnt/nfs_share", "files")
-    file_path = os.path.join(base_dir, "original", f"{task_id}.{original_format}")
-    return FileResponse(file_path)
+    # Construct the file path in the bucket
+    file_path = f"original/{task_id}.{original_format}"
+    
+    # Get the bucket object
+    bucket = storage_client.bucket(bucket_name)
+    
+    # Get the blob object
+    blob = bucket.blob(file_path)
+    
+    # Check if the blob exists
+    if not blob.exists():
+        raise HTTPException(status_code=404, detail="File not found")
+
+    # Create a streaming response to serve the file
+    response = StreamingResponse(blob.open("rb"), media_type="application/octet-stream")
+    
+    # Add a content-disposition header to prompt downloads with the correct filename
+    response.headers["Content-Disposition"] = f"attachment; filename={task_id}.{original_format}"
+    
+    return response
 
 
 @router.get("/files/converted/{task_id}.{target_format}")
