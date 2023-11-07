@@ -50,7 +50,7 @@ This README simplifies the setup process by focusing on the Docker setup, which 
 
 # run fastapi
 docker build -f Dockerfile.app -t app:0.1 .
-docker run -p 8000:8000 app:0.1
+docker run -d -p 8000:8000 app:0.1
 
 # run celery worker
 docker build -f Dockerfile.celery -t celery:0.1 .
