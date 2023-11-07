@@ -12,7 +12,6 @@ from fastapi import (
     UploadFile,
     status,
 )
-from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from app.celery_app import convert_file
 from app.crud import create_task, delete_task, get_task, get_user_tasks
@@ -25,10 +24,8 @@ from starlette.responses import StreamingResponse
 
 router = APIRouter()
 
-# Initialize the GCS client
 storage_client = storage.Client()
 
-# Define bucket name
 bucket_name = "bucket-files"
 
 
@@ -73,15 +70,19 @@ async def create_task_endpoint(
         )
 
     task = create_task(db, file.filename, newFormat, current_user.id)
-    file_location = os.path.join(
-        "/mnt/nfs_share", "files", "original", f"{task.id}.{file_format}"
-    )
+
+    file_path = f"files/original/{task.id}.{file_format}"
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(file_path)
+
     try:
-        with open(file_location, "wb+") as file_object:
-            shutil.copyfileobj(file.file, file_object)
+        blob.upload_from_file(file.file, content_type=file.content_type)
     except Exception as e:
-        print(f"Error while saving file: {e}")
-        raise
+        print(f"Error while uploading file: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail="Error while uploading file.",
+        )
 
     convert_file.apply_async(args=[task.id, file_format, newFormat.lower()])
 
@@ -152,6 +153,16 @@ async def serve_converted_file(
     task_id: int = Path(..., title="The ID of the task"),
     target_format: str = Path(..., title="The target format of the file"),
 ):
-    base_dir = os.path.join("/mnt/nfs_share", "files")
-    file_path = os.path.join(base_dir, "converted", f"{task_id}.{target_format}")
-    return FileResponse(file_path)
+    file_path = f"converted/{task_id}.{target_format}"
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(file_path)
+
+    if not blob.exists():
+        raise HTTPException(status_code=404, detail="File not found")
+
+    response = StreamingResponse(blob.open("rb"), media_type="application/octet-stream")
+    response.headers[
+        "Content-Disposition"
+    ] = f"attachment; filename={task_id}.{target_format}"
+
+    return response
