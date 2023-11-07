@@ -1,5 +1,3 @@
-import shutil
-import os
 from fastapi import (
     APIRouter,
     Depends,
@@ -8,6 +6,7 @@ from fastapi import (
     HTTPException,
     Path,
     Query,
+    Request,
     Response,
     UploadFile,
     status,
@@ -71,7 +70,7 @@ async def create_task_endpoint(
 
     task = create_task(db, file.filename, newFormat, current_user.id)
 
-    file_path = f"files/original/{task.id}.{file_format}"
+    file_path = f"original/{task.id}.{file_format}"
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(file_path)
 
@@ -91,6 +90,7 @@ async def create_task_endpoint(
 
 @router.get("/api/tasks/{id_task}", response_model=TaskResponse)
 async def get_task_endpoint(
+    request: Request,
     id_task: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
@@ -99,7 +99,7 @@ async def get_task_endpoint(
     if task is None or task.user_id != current_user.id:
         raise HTTPException(status_code=404, detail="Task not found")
 
-    base_url = "http://localhost:8000"
+    base_url = request.base_url.scheme + "://" + request.base_url.netloc
     original_file_url = f"{base_url}/files/original/{task.id}.{task.original_format}"
     processed_file_url = f"{base_url}/files/converted/{task.id}.{task.target_format}"
 

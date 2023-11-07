@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 from sqlalchemy import asc, desc
 from sqlalchemy.orm import Session
-from fastapi import HTTPException, status
+from fastapi import HTTPException, Request, status
 from app.security import get_password_hash, verify_password
 from app.models import Task, TaskStatus, User
 from app.schemas import TaskResponse
@@ -37,7 +37,11 @@ def verify_credentials(db: Session, username: str, password: str):
 
 
 def get_user_tasks(
-    db: Session, user_id: int, max: Optional[int] = 10, order: Optional[int] = 0
+    request: Request,
+    db: Session,
+    user_id: int,
+    max: Optional[int] = 10,
+    order: Optional[int] = 0,
 ):
     if order == 0:
         tasks = (
@@ -56,7 +60,7 @@ def get_user_tasks(
             .all()
         )
 
-    base_url = "http://localhost:8000"
+    base_url = request.base_url.scheme + "://" + request.base_url.netloc
     task_responses = [
         TaskResponse(
             id=task.id,

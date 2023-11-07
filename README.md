@@ -48,7 +48,10 @@ For more detailed API documentation, you can visit the interactive API documenta
 This README simplifies the setup process by focusing on the Docker setup, which is what you wanted for the tutor. It avoids the need for manual database setup, Python virtual environment setup, or manual installation of dependencies. The tutor just needs Docker installed, and then they can clone the project, build and run the Docker containers, and access the application and API documentation through their web browser.
 
 
-
-docker run -d -p 8000:8000 app:0.
+# run fastapi
 docker build -f Dockerfile.app -t app:0.1 .
 docker run -p 8000:8000 app:0.1
+
+# run celery worker
+docker build -f Dockerfile.celery -t celery:0.1 .
+docker run -d celery:0.1
