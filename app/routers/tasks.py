@@ -30,12 +30,13 @@ bucket_name = "bucket-files"
 
 @router.get("/api/tasks", response_model=TaskList)
 async def read_tasks(
+    request: Request,
     max: int = Query(10, ge=1, le=100),
     order: int = Query(0, ge=0, le=1),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    tasks = get_user_tasks(db, user_id=current_user.id, max=max, order=order)
+    tasks = get_user_tasks(request, db, user_id=current_user.id, max=max, order=order)
     return {"tasks": tasks}
 
 
