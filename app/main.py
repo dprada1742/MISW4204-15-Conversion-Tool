@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from app.database import run_migrations
 from app.routers import auth, tasks
@@ -9,11 +9,10 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
+
 @app.get("/healthcheck")
 def healthcheck():
-    return JSONResponse(
-        status_code=status.HTTP_200_OK,
-        content={"status": "healthy"}
+    return JSONResponse(status_code=status.HTTP_200_OK, content={"status": "healthy"})
 
 
 @app.exception_handler(Exception)
