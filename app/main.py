@@ -12,9 +12,7 @@ app = FastAPI()
 
 @app.get("/healthcheck")
 def healthcheck():
-    return JSONResponse(
-        status_code=status.HTTP_200_OK, content={"status": "healthy service"}
-    )
+    return JSONResponse(status_code=status.HTTP_200_OK, content={"status": "healthy"})
 
 
 @app.exception_handler(Exception)
