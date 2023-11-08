@@ -9,6 +9,12 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
+@app.get("/healthcheck")
+def healthcheck():
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={"status": "healthy"}
+
 
 @app.exception_handler(Exception)
 async def generic_exception_handler(request: Request, exc: Exception):
