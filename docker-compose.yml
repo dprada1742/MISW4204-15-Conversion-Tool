@@ -31,16 +31,6 @@ services:
     volumes:
       - ./files:/app/files 
 
-  celery:
-    build:
-      context: .
-      dockerfile: Dockerfile.celery
-    depends_on:
-      - db
-      - redis
-    volumes:
-      - ./files:/app/files 
-
   nginx:
     build:
       context: .
