@@ -1,3 +1,4 @@
+import json
 from fastapi import (
     APIRouter,
     Depends,
@@ -12,7 +13,6 @@ from fastapi import (
     status,
 )
 from sqlalchemy.orm import Session
-from app.celery_app import convert_file
 from app.crud import create_task, delete_task, get_task, get_user_tasks
 from app.database import get_db
 from app.dependencies import get_current_user
@@ -20,12 +20,15 @@ from app.models import User
 from app.schemas import TaskList, TaskResponse
 from google.cloud import storage
 from starlette.responses import StreamingResponse
+from google.cloud import pubsub_v1
 
 router = APIRouter()
 
 storage_client = storage.Client()
-
 bucket_name = "bucket-files"
+
+publisher = pubsub_v1.PublisherClient()
+topic_path = publisher.topic_path("sw-nube-uniandes", "fastapi_conversion")
 
 
 @router.get("/api/tasks", response_model=TaskList)
@@ -84,7 +87,12 @@ async def create_task_endpoint(
             detail="Error while uploading file.",
         )
 
-    convert_file.apply_async(args=[task.id, file_format, newFormat.lower()])
+    message_data = {
+        "task_id": task.id,
+        "original_format": file_format,
+        "target_format": newFormat.lower(),
+    }
+    publisher.publish(topic_path, json.dumps(message_data).encode("utf-8"))
 
     return {"message": "Task created successfully"}
 

@@ -1,28 +1,27 @@
 import os
+import json
+from exceptiongroup import catch
 import ffmpeg
-from celery import Celery
+from google.cloud import pubsub_v1, storage
 from app.crud import update_task_status
 from app.database import SessionLocal
 from app.models import TaskStatus
-from google.cloud import storage
 import tempfile
-
-celery_app = Celery(
-    "conversion_tool",
-    broker="redis://default:strong-password@10.128.0.5:6379/0",
-    backend="redis://default:strong-password@10.128.0.5:6379/0",
-)
 
 # Initialize the GCP storage client
 storage_client = storage.Client()
 bucket_name = "bucket-files"
 bucket = storage_client.get_bucket(bucket_name)
 
+# Pub/Sub Subscriber
+subscriber = pubsub_v1.SubscriberClient()
+subscription_path = subscriber.subscription_path(
+    "sw-nube-uniandes", "fastapi_subscriber"
+)
 
-@celery_app.task(name="app.workers.convert_file")
-def convert_file(task_id: int, original_format: str, target_format: str):
+
+def convert_file_logic(task_id, original_format, target_format):
     db = SessionLocal()
-
     original_blob = bucket.blob(f"original/{task_id}.{original_format}")
     converted_blob = bucket.blob(f"converted/{task_id}.{target_format}")
 
@@ -43,3 +42,24 @@ def convert_file(task_id: int, original_format: str, target_format: str):
             update_task_status(db, task_id, TaskStatus.ERROR)
         finally:
             db.close()
+
+
+def callback(message):
+    print(f"Received message: {message.data.decode('utf-8')}")
+    message_data = json.loads(message.data.decode("utf-8"))
+
+    convert_file_logic(
+        message_data["task_id"],
+        message_data["original_format"],
+        message_data["target_format"],
+    )
+
+    message.ack()
+
+
+with subscriber:
+    future = subscriber.subscribe(subscription_path, callback=callback)
+    try:
+        future.result()
+    except KeyboardInterrupt:
+        future.cancel()
