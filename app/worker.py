@@ -7,6 +7,7 @@ from app.crud import update_task_status
 from app.database import SessionLocal
 from app.models import TaskStatus
 import tempfile
+from google.cloud.pubsub_v1.types import FlowControl
 
 # Initialize the GCP storage client
 storage_client = storage.Client()
@@ -18,6 +19,8 @@ subscriber = pubsub_v1.SubscriberClient()
 subscription_path = subscriber.subscription_path(
     "sw-nube-uniandes", "fastapi_subscriber"
 )
+
+flow_control = FlowControl(max_messages=1)
 
 
 def convert_file_logic(task_id, original_format, target_format):
@@ -58,7 +61,9 @@ def callback(message):
 
 
 with subscriber:
-    future = subscriber.subscribe(subscription_path, callback=callback)
+    future = subscriber.subscribe(
+        subscription_path, callback=callback, flow_control=flow_control
+    )
     try:
         future.result()
     except KeyboardInterrupt:
