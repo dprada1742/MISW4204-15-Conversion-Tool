@@ -8,6 +8,7 @@ from app.database import SessionLocal
 from app.models import TaskStatus
 import tempfile
 from google.cloud.pubsub_v1.types import FlowControl
+import random
 
 # Initialize the GCP storage client
 storage_client = storage.Client()
@@ -26,11 +27,13 @@ flow_control = FlowControl(max_messages=1)
 def convert_file_logic(task_id, original_format, target_format):
     db = SessionLocal()
     original_blob = bucket.blob(f"original/{task_id}.{original_format}")
-    converted_blob = bucket.blob(f"converted/{task_id}.{target_format}")
+    random_number = random.randint(1000, 9999)
+    converted_filename = f"{task_id}_{random_number}.{target_format}"
+    converted_blob = bucket.blob(f"converted/{converted_filename}")
 
     with tempfile.TemporaryDirectory() as temp_dir:
         input_path = os.path.join(temp_dir, f"{task_id}.{original_format}")
-        output_path = os.path.join(temp_dir, f"{task_id}.{target_format}")
+        output_path = os.path.join(temp_dir, converted_filename)
 
         original_blob.download_to_filename(input_path)
 
@@ -44,7 +47,7 @@ def convert_file_logic(task_id, original_format, target_format):
             print(f"Error: {error_message}")
             update_task_status(db, task_id, TaskStatus.ERROR)
         finally:
-            db.close()
+            db.close(
 
 
 def callback(message):
