@@ -47,7 +47,7 @@ def convert_file_logic(task_id, original_format, target_format):
             print(f"Error: {error_message}")
             update_task_status(db, task_id, TaskStatus.ERROR)
         finally:
-            db.close(
+            db.close()
 
 
 def callback(message):
