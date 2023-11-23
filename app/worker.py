@@ -9,6 +9,10 @@ from app.models import TaskStatus
 import tempfile
 from google.cloud.pubsub_v1.types import FlowControl
 import random
+import datetime
+
+current_datetime = datetime.datetime.now()
+print(f"Script executed at: {current_datetime}")
 
 # Initialize the GCP storage client
 storage_client = storage.Client()
