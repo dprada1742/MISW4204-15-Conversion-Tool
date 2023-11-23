@@ -4,7 +4,7 @@ from alembic.config import Config
 from alembic import command
 
 SQLALCHEMY_DATABASE_URL = (
-    "postgresql://postgres:strong-password@34.42.65.109:5432/conversion"
+    "postgresql://postgres:strong-password@10.121.240.3:5432/conversion"
 )
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
