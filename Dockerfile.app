@@ -13,6 +13,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
 
-# Run the command to start uWSGI
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--log-level", "debug"]
-
+# Start the application
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port $PORT --log-level debug"]
