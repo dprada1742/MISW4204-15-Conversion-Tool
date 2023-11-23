@@ -8,21 +8,21 @@ from app.database import SessionLocal
 from app.models import TaskStatus
 import tempfile
 from google.cloud.pubsub_v1.types import FlowControl
-import random
 import datetime
+import traceback
 
 current_datetime = datetime.datetime.now()
 print(f"Script executed at: {current_datetime}")
 
 # Initialize the GCP storage client
 storage_client = storage.Client()
-bucket_name = "bucket-files"
+bucket_name = "bucket-uniandes"
 bucket = storage_client.get_bucket(bucket_name)
 
 # Pub/Sub Subscriber
 subscriber = pubsub_v1.SubscriberClient()
 subscription_path = subscriber.subscription_path(
-    "sw-nube-uniandes", "fastapi_subscriber"
+    "conversion-403200", "fastapi_subscriber"
 )
 
 flow_control = FlowControl(max_messages=1)
@@ -31,24 +31,20 @@ flow_control = FlowControl(max_messages=1)
 def convert_file_logic(task_id, original_format, target_format):
     db = SessionLocal()
     original_blob = bucket.blob(f"original/{task_id}.{original_format}")
-    random_number = random.randint(1000, 9999)
-    converted_filename = f"{task_id}_{random_number}.{target_format}"
-    converted_blob = bucket.blob(f"converted/{converted_filename}")
+    converted_blob = bucket.blob(f"converted/{task_id}.{target_format}")
 
     with tempfile.TemporaryDirectory() as temp_dir:
         input_path = os.path.join(temp_dir, f"{task_id}.{original_format}")
-        output_path = os.path.join(temp_dir, converted_filename)
-
+        output_path = os.path.join(temp_dir, f"{task_id}.{target_format}")
         original_blob.download_to_filename(input_path)
 
         try:
             ffmpeg.input(input_path).output(output_path).run()
             converted_blob.upload_from_filename(output_path)
             update_task_status(db, task_id, TaskStatus.PROCESSED)
-
-        except Exception as e:
-            error_message = str(e)
-            print(f"Error: {error_message}")
+        except Exception:
+            print(f"Error occurred during file conversion for task ID {task_id}:")
+            traceback.print_exc()
             update_task_status(db, task_id, TaskStatus.ERROR)
         finally:
             db.close()

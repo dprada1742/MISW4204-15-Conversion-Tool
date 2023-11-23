@@ -25,10 +25,10 @@ from google.cloud import pubsub_v1
 router = APIRouter()
 
 storage_client = storage.Client()
-bucket_name = "bucket-files"
+bucket_name = "bucket-uniandes"
 
 publisher = pubsub_v1.PublisherClient()
-topic_path = publisher.topic_path("sw-nube-uniandes", "fastapi_conversion")
+topic_path = publisher.topic_path("conversion-403200", "fastapi_conversion")
 
 
 @router.get("/api/tasks", response_model=TaskList)
