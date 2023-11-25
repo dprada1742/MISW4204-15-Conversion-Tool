@@ -15,5 +15,14 @@ RUN apt-get update && \
     apt-get install -y ffmpeg && \
     rm -rf /var/lib/apt/lists/*
 
-# Command to run the celery worker
-CMD ["python", "-m", "app.worker"]
+# Flask server setup
+RUN pip install Flask gunicorn
+RUN echo 'from flask import Flask \n\
+app = Flask(__name__) \n\
+@app.route("/") \n\
+def home(): \n\
+    return "This is a dummy server for Cloud Run"' > flask_app.py
+
+# Command to run the worker and Flask server using gunicorn
+EXPOSE 8080
+CMD python -m app.worker & gunicorn -b :8080 flask_app:app
