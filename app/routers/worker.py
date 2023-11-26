@@ -1,3 +1,4 @@
+import base64
 import os
 import json
 import ffmpeg
@@ -53,7 +54,8 @@ async def pubsub_push(request: Request):
     if "data" not in message:
         raise HTTPException(status_code=400, detail="No data in Pub/Sub message")
 
-    message_data = json.loads(message["data"].decode("utf-8"))
+    decoded_data = base64.b64decode(message["data"]).decode("utf-8")
+    message_data = json.loads(decoded_data)
 
     convert_file_logic(
         message_data["task_id"],
