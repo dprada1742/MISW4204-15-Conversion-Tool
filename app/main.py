@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from app.database import run_migrations
-from app.routers import auth, tasks
+from app.routers import auth, tasks, worker
 import logging
 
 logging.basicConfig(level=logging.ERROR)
@@ -29,3 +29,4 @@ run_migrations()
 
 app.include_router(auth.router)
 app.include_router(tasks.router)
+app.include_router(worker.router)
