@@ -13,7 +13,7 @@ from fastapi import APIRouter, Request, HTTPException
 router = APIRouter()
 
 storage_client = storage.Client()
-bucket_name = "bucket-uniandes"
+bucket_name = "bucket-uniandes-cloud"
 bucket = storage_client.get_bucket(bucket_name)
 
 

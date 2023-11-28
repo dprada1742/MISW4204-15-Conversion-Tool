@@ -25,7 +25,7 @@ from google.cloud import pubsub_v1
 router = APIRouter()
 
 storage_client = storage.Client()
-bucket_name = "bucket-uniandes"
+bucket_name = "bucket-uniandes-cloud"
 
 publisher = pubsub_v1.PublisherClient()
 topic_path = publisher.topic_path("conversion-403200", "fastapi_conversion")
